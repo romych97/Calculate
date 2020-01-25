@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="utf-8">
+	<title>Доступное бухгалтерское обслуживание | БЭК Офис</title>
+	<meta name="viewport" content="width=device-width">
+	<link rel="icon" href="favicon.ico">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="stylesheet" href="css/styles.min.css">
+
+	<!-- Jquery -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  			crossorigin="anonymous"></script>
+
+	<!-- Скрипты для парсинга Excel Файлов -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+	<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+	
+
+	<!-- Скрипты страницы -->
+	<script src="index.js" defer></script>
+
+	<!-- Стили -->
+	<link rel="stylesheet" href="index.css">
+
+</head>
+
+<body>
+	<section class="calculator">
+		<div class="container">
+			<h2 class="section__title text-center" id="calculator">Калькулятор тарифа</h2>
+			<div class="calculator__block">
+				<div class="calculator__left">
+					<div class="calculator__taxation">
+						<h4 class="calculator__taxation-subtitle calculator__subtitle">
+							Система налогообложения
+						</h4>
+						<input type="range" class="calculator__taxation-range" min="0" max="4" step="1" value="0">
+						<div class="calculator__taxation-step">
+							<span data-step="0"
+								class="calculator__taxation-step-item calculator__taxation-step-item_active">ОСНО</span>
+							<span data-step="1" class="calculator__taxation-step-item">УСН 15%</span>
+							<span data-step="2" class="calculator__taxation-step-item">УСН 6%</span>
+							<span data-step="3" class="calculator__taxation-step-item">ПАТЕНТ</span>
+							<span data-step="4" class="calculator__taxation-step-item">ЕНВД</span>
+						</div>
+					</div>
+					<div class="calculator__activity">
+						<h4 class="calculator__activity-subtitle calculator__subtitle">
+							Вид деятельности
+						</h4>
+						<div class="calculator__activity-list">
+							<div class="calculator__activity-list-left">
+								<div class="calculator__activity-item">
+									<input type="checkbox" id="services" name="services" value="Да" checked>
+									<label for="services">Услуги</label>
+								</div>
+								<div class="calculator__activity-item">
+									<input type="checkbox" id="wholesale" name="wholesale" value="Да">
+									<label for="wholesale">Оптовая торговля</label>
+								</div>
+								<div class="calculator__activity-item">
+									<input type="checkbox" id="production" name="production" value="Да">
+									<label for="production">Производство</label>
+								</div>
+							</div>
+							<div class="calculator__activity-list-right">
+								<div class="calculator__activity-item">
+									<input type="checkbox" id="retail" name="retail" value="Да">
+									<label for="retail">Розничная торговля</label>
+								</div>
+								<div class="calculator__activity-item">
+									<input type="checkbox" id="service" name="service" value="Да">
+									<label for="service">Сервис</label>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="calculator__count">
+						<h4 class="calculator__subtitle calculator__count-subtitle">
+							Укажите количество (в месяц):
+						</h4>
+						<div class="calculator__count-item" id="deals">
+							<div class="calculator__count-item__left">
+								<input type="number" name="client" value="10">
+								<span class="calculator__count-item-info" id="term">
+									Сделок с клиентами
+								</span>
+							</div>
+							<div class="calculator__count-item__right">
+								<div class="calculator__count-item__checkbox">
+									<input type="checkbox" checked>
+									<span class="span-checkbox checked"></span>
+									<p class="calculator__count-item__checkbox-info">Доверяю вам</p>
+								</div>
+							</div>
+						</div>
+						<div class="calculator__count-item" id="business_partners">
+							<div class="calculator__count-item__left">
+								<input type="number" name="provider" value="10">
+								<span class="calculator__count-item-info">
+									Сделок с поставщиками
+								</span>
+							</div>
+							<div class="calculator__count-item__right">
+								<div class="calculator__count-item__checkbox">
+									<input type="checkbox" checked>
+									<span class="span-checkbox checked"></span>
+									<p class="calculator__count-item__checkbox-info">Доверяю вам</p>
+								</div>
+							</div>
+						</div>
+						<div class="calculator__count-item" id="staff">
+							<div class="calculator__count-item__left">
+								<input type="number" name="employee" value="2">
+								<span id="staff_span" class="calculator__count-item-info">
+									Штатных сотрудников
+								</span>
+							</div>
+							<div class="calculator__count-item__right">
+								<div class="calculator__count-item__checkbox">
+									<input type="checkbox" id="trust_salaryAndStaff_checkbox" checked="checked">
+									<span id="trust_salaryAndStaff" class="span-checkbox checked"></span>
+									<p class="calculator__count-item__checkbox-info">Доверяю вам</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<p id="termInfo"></p>
+				</div>
+				<div class="calculator__right">
+					<div class="calculator__right-wrap">
+						<h4 class="calculator__subtitle text-center">
+							Тариф обслуживания
+						</h4>
+						<div class="calculator__tarrifs">
+							<input type="range" class="calculator__tarrifs-range" step="1" min="0" max="3"
+								value="3">
+							<div class="calculator__tarrifs-list">
+								<span data-step="0" class="calculator__tarrifs-item">Зарплата и кадры</span>
+								<span data-step="1" class="calculator__tarrifs-item">Отчетность</span>
+								<span data-step="2" class="calculator__tarrifs-item">Ип без работников</span>
+								<span data-step="3"
+									class="calculator__tarrifs-item calculator__tarrifs-item_active">Комлексный</span>
+							</div>
+						</div>
+
+						<h4 class="calculator__subtitle calculator__price-subtitle">
+							Стоимость обслуживания
+						</h4>
+						<div class="calculator__price">
+							<span class="calculator__price-count">8946</span>руб. <span
+								class="calculator__price-month">/месяц</span>
+						</div>
+						<button class="btn btn_calculator">Оставить заявку</button>
+						<p class="calculator__price-desc">
+							* Указанная стоимость не является офертой и носит информационный характер
+						</p>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+
+</html>
