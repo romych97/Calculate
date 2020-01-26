@@ -80,6 +80,7 @@ oReq.send();
 // Вешаем обрабочики на тарифы
 function next() {
 
+    // Вызываем функцию обрабатывающую тариф
     $('.calculator__tarrifs-range').change(function() {
         if (this.value == 3) { first_tariff()  }
         if (this.value == 2) { second_tariff() }
@@ -87,23 +88,98 @@ function next() {
         if (this.value == 0) { fourth_tariff() }
     })
 
+    let transactions_suppliers = $('.calculator__count-item').find('input[name=client]');
+    let transactions_buyers = $('.calculator__count-item').find('input[name=provider]');
+    let sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
+
+    // Комплексный тариф
     function first_tariff() {
         handler();
-        get_span(tariff_span, 3)
-        $('.calculator__activity').fadeIn(500)
-        $('.calculator__count').fadeIn(500)
+        get_span(tariff_span, 3);
+        $('.calculator__activity').fadeIn(0);
+        $('.calculator__count').fadeIn(0);
+        sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
+        get_sum(sum_transactions, 'ОСНО', 'ООО');
 
-        console.log(excelTable_main)
+        inputs_handler('ОСНО');
+        function inputs_handler(service_type) {
+            // Сделок с поставщиками
+            $('#transactions_suppliers').change(function(){
+                sum_transactions = parseInt(this.value) + parseInt(transactions_suppliers.val())
+                get_sum(sum_transactions, service_type, 'ООО');
+            })     
+
+            // Сделок с клиентами
+            $('#transactions_buyers').change(function(){
+                sum_transactions = parseInt(this.value) + parseInt(transactions_buyers.val())
+                get_sum(sum_transactions, service_type, 'ООО');
+            })     
+
+            // Штатных сотрудников
+            $('#employee_input').change(function(){
+                sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
+                get_sum(sum_transactions, service_type, 'ООО');
+            })     
+        }
+
+        // Обработчик для спанов при переключении Input Range
+        $('.calculator__taxation-range').change(function(){
+            for (let g = 0; g < $('.calculator__taxation-step-item').length; g++) {
+                if ($('.calculator__taxation-step-item')[g].getAttribute('data-step') == this.value) {
+                    $($('.calculator__taxation-step-item')[g]).addClass('calculator__taxation-step-item_active')
+                    get_sum(sum_transactions, $('.calculator__taxation-step-item')[g].innerText, 'ООО')
+                    inputs_handler($('.calculator__taxation-step-item')[g].innerText);
+                } else {
+                    $($('.calculator__taxation-step-item')[g]).removeClass('calculator__taxation-step-item_active')
+                }     
+            }
+        })     
     }
     first_tariff();
 
+    // Тариф ИП БЕЗ РАБОТНИКОВ
     function second_tariff() {
         handler();
         get_span(tariff_span, 2)
         $('.calculator__activity').fadeIn(500)
         $('.calculator__count').fadeIn(500)
 
-        console.log(excelTable_main)
+        sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
+        get_sum(sum_transactions, 'ОСНО', 'ИП без работников');       
+        
+        inputs_handlers('ОСНО');
+        function inputs_handlers(service_type) {
+            // Сделок с поставщиками
+            $('#transactions_suppliers').change(function(){
+                sum_transactions = parseInt(this.value) + parseInt(transactions_suppliers.val())
+                get_sum(sum_transactions, service_type, 'ИП без работников');
+            })     
+
+            // Сделок с клиентами
+            $('#transactions_buyers').change(function(){
+                sum_transactions = parseInt(this.value) + parseInt(transactions_buyers.val())
+                get_sum(sum_transactions, service_type, 'ИП без работников');
+            })     
+
+            // Штатных сотрудников
+            $('#employee_input').change(function(){
+                sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
+                get_sum(sum_transactions, service_type, 'ИП без работников');
+            })     
+        }
+
+        // Обработчик для спанов при переключении Input Range
+        $('.calculator__taxation-range').change(function(){
+            for (let g = 0; g < $('.calculator__taxation-step-item').length; g++) {
+                if ($('.calculator__taxation-step-item')[g].getAttribute('data-step') == this.value) {
+                    $($('.calculator__taxation-step-item')[g]).addClass('calculator__taxation-step-item_active')
+                    get_sum(sum_transactions, $('.calculator__taxation-step-item')[g].innerText, 'ИП без работников')
+                    inputs_handlers($('.calculator__taxation-step-item')[g].innerText);
+                } else {
+                    $($('.calculator__taxation-step-item')[g]).removeClass('calculator__taxation-step-item_active')
+                }     
+            }
+        }) 
     }
 
     // Отчетность
@@ -236,3 +312,59 @@ function next() {
     }
 }
 // Вешаем обрабочики на тарифы
+
+// Подсчет суммы для тарифов "Комплексный" и "ИП Без работников"
+function get_sum(transactions, service_type, tariff_type) {
+    console.log(transactions + ' - ' + 'transactions sum');
+    console.log(service_type + ' - ' + 'service type');
+   
+    if (tariff_type == 'ООО') { 
+        service_type == 'ПАТЕНТ' ? service_type = 'Патент' : service_type = service_type
+        for (let i = 0; i < excelTable_main.length; i++) {
+            let from = excelTable_main[i]['__EMPTY'];
+            let to = excelTable_main[i]['__EMPTY_1'];
+
+            if (transactions <= parseInt(to) && transactions >= parseInt(from)) {
+                let price = excelTable_main[i][service_type];
+                console.log(excelTable_main[i][service_type])
+                console.log(price)
+                console.log(excelTable_main[0])
+                console.log(excelTable_main[i])
+                
+                let get_epml_summ = 0;
+                if (parseInt($('#employee_input').val()) <= 1) { get_epml_summ = 0 }
+                else { get_epml_summ = parseInt($('#employee_input').val()) * 200 - 200 }
+                $('.calculator__price-count').text(price + get_epml_summ);
+            } 
+        }
+    }
+
+    if (tariff_type == 'ИП без работников') {
+        for (let i = 0; i < excelTable_main.length; i++) {
+            let from = excelTable_main[i]['__EMPTY'];
+            let to = excelTable_main[i]['__EMPTY_1'];
+
+            if (transactions <= parseInt(to) && transactions >= parseInt(from)) {
+                let price = 0;
+
+                if (service_type == 'ОСНО')    { price = excelTable_main[i].__EMPTY_2;  }
+                if (service_type == 'УСН 15%') { price = excelTable_main[i].__EMPTY_5;  }
+                if (service_type == 'УСН 6%')  { price = excelTable_main[i].__EMPTY_8;  }
+                if (service_type == 'ПАТЕНТ')  { price = excelTable_main[i].__EMPTY_11; }
+                if (service_type == 'ЕНВД')    { price = excelTable_main[i].__EMPTY_14; }
+
+                console.log(excelTable_main[i].__EMPTY_2)
+                console.log(excelTable_main[i][service_type])
+                console.log(price + ' - ' + 'price')
+                console.log(excelTable_main[0])
+                console.log(excelTable_main[i])
+                
+                let get_epml_summ = 0;
+                if (parseInt($('#employee_input').val()) <= 1) { get_epml_summ = 0 }
+                else { get_epml_summ = parseInt($('#employee_input').val()) * 200 - 200 }
+                $('.calculator__price-count').text(price + get_epml_summ);
+            } 
+        }
+    }
+}
+// Подсчет суммы для тарифов "Комплексный" и "ИП Без работников"
