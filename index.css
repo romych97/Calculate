@@ -8,6 +8,13 @@ span.calculator__count-item-info.item-active:after {
     color: red;
 }
 
+.span-checkbox {
+    background: gray !important;;
+}
+.span-checkbox.checked {
+    background: red !important;
+}
+
 .span-checkbox:after {
     left: 0px;
     right: auto;
