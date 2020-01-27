@@ -88,7 +88,6 @@ function next() {
 
     let transactions_suppliers = $('.calculator__count-item').find('input[name=client]');
     let transactions_buyers = $('.calculator__count-item').find('input[name=provider]');
-    let sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
 
     // Комплексный тариф
     function first_tariff() {
@@ -391,8 +390,7 @@ function next() {
         staff_count >= 16 && staff_count <= 30  ? salary_sum = table[3][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 31 && staff_count <= 50  ? salary_sum = table[4][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 51 && staff_count <= 100 ? salary_sum = table[5][row] * emloyee_counter.val() : salary_sum = salary_sum;
-        console.log(staff_count)
-        console.log(salary_sum)
+
         return salary_sum;
     }
 
@@ -447,27 +445,58 @@ function get_sum(transactions, service_type, tariff_type) {
             let from = excelTable_main[i]['__EMPTY'];
             let to = excelTable_main[i]['__EMPTY_1'];
 
-            if (transactions <= parseInt(to) && transactions >= parseInt(from)) {
-                let price = excelTable_main[i][service_type];
-                let emloyee_price = 0;
+            // Если цена больше допустимой
+            if (transactions >= excelTable_main[excelTable_main.length - 1].__EMPTY_1) {
+                console.log('so large')
+                if (service_type == 'ОСНО')    { 
+                    emloyee_price = excelTable_main[excelTable_main.length - 1][service_type];  }
+                if (service_type == 'УСН 15%') { 
+                    emloyee_price = excelTable_main[excelTable_main.length - 1][service_type];  }
+                if (service_type == 'УСН 6%')  { 
+                    emloyee_price = excelTable_main[excelTable_main.length - 1][service_type];  }
+                if (service_type == 'ПАТЕНТ')  { 
+                    emloyee_price = excelTable_main[excelTable_main.length - 1][service_type];  }
+                if (service_type == 'ЕНВД')    { 
+                    emloyee_price = excelTable_main[excelTable_main.length - 1][service_type];  }
 
-                if (service_type == 'ОСНО')    { emloyee_price = excelTable_main[i].__EMPTY_3;  }
-                if (service_type == 'УСН 15%') { emloyee_price = excelTable_main[i].__EMPTY_6;  }
-                if (service_type == 'УСН 6%')  { emloyee_price = excelTable_main[i].__EMPTY_9;  }
-                if (service_type == 'ПАТЕНТ')  { emloyee_price = excelTable_main[i].__EMPTY_12; }
-                if (service_type == 'ЕНВД')    { emloyee_price = excelTable_main[i].__EMPTY_15; }
-                              
-                let get_epml_summ = 0;
+                calc_price_count.text(emloyee_price);   
 
-                if ($('#trust_salaryAndStaff').hasClass('checked') == true) {
-                if (parseInt($('#employee_input').val()) <= 1) { get_epml_summ = 0 }
-                else { get_epml_summ = parseInt($('#employee_input').val()) * emloyee_price - emloyee_price }
-                } else {
-                    get_epml_summ = 0
+            } else {
+                if (transactions <= parseInt(to) && transactions >= parseInt(from)) {
+                    let price = excelTable_main[i][service_type]; // Стандартная цена
+                    let emloyee_price = 0;
+
+                    // Подбираем цену для сделок в зависимости от тарифа
+                    if (service_type == 'ОСНО')    { 
+                        emloyee_price = excelTable_main[i].__EMPTY_3; }
+                    if (service_type == 'УСН 15%') { 
+                        emloyee_price = excelTable_main[i].__EMPTY_6;  }
+                    if (service_type == 'УСН 6%')  { 
+                        emloyee_price = excelTable_main[i].__EMPTY_9;  }
+                    if (service_type == 'ПАТЕНТ')  { 
+                        emloyee_price = excelTable_main[i].__EMPTY_12; }
+                    if (service_type == 'ЕНВД')    { 
+                        emloyee_price = excelTable_main[i].__EMPTY_15; }
+                                
+                    let get_epml_summ = 0;
+
+                    if ($('#trust_salaryAndStaff').hasClass('checked') == true) {
+                        if (parseInt($('#employee_input').val()) <= 1) { 
+                            get_epml_summ = 0 
+                        } else { 
+                            get_epml_summ = parseInt($('#employee_input').val()) * emloyee_price - emloyee_price 
+                        }
+                    } else {
+                        get_epml_summ = 0
+                    }
+
+                    let final = price + get_epml_summ;
+
+
+                    console.log(price + get_epml_summ)
+                    calc_price_count.text(final);
                 }
-               
-                calc_price_count.text(price + get_epml_summ);
-            } 
+            }
         }
     }
 
@@ -476,40 +505,56 @@ function get_sum(transactions, service_type, tariff_type) {
             let from = excelTable_main[i]['__EMPTY'];
             let to = excelTable_main[i]['__EMPTY_1'];
 
-            if (transactions <= parseInt(to) && transactions >= parseInt(from)) {
-                let price = 0;
-                let emloyee_price = 0;
-
-                if (service_type == 'ОСНО') { 
-                    price = excelTable_main[i].__EMPTY_2;  
-                    emloyee_price = excelTable_main[i].__EMPTY_4;
-                }
+            // Если цена больше допустимой
+            if (transactions >= excelTable_main[excelTable_main.length - 1].__EMPTY_1) {
+                if (service_type == 'ОСНО')    { 
+                    emloyee_price = excelTable_main[excelTable_main.length - 1].__EMPTY_2;  }
                 if (service_type == 'УСН 15%') { 
-                    price = excelTable_main[i].__EMPTY_5;  
-                    emloyee_price = excelTable_main[i].__EMPTY_7;
-                }
-                if (service_type == 'УСН 6%') { 
-                    price = excelTable_main[i].__EMPTY_8; 
-                    emloyee_price = excelTable_main[i].__EMPTY_10;
-                }
-                if (service_type == 'ПАТЕНТ') { 
-                    price = excelTable_main[i].__EMPTY_11; 
-                    emloyee_price = excelTable_main[i].__EMPTY_13;
-                }
-                if (service_type == 'ЕНВД') { 
-                    price = excelTable_main[i].__EMPTY_14; 
-                    emloyee_price = excelTable_main[i].__EMPTY_16;
-                }
-                
-                let get_epml_summ = 0;
+                    emloyee_price = excelTable_main[excelTable_main.length - 1].__EMPTY_5;  }
+                if (service_type == 'УСН 6%')  { 
+                    emloyee_price = excelTable_main[excelTable_main.length - 1].__EMPTY_8;  }
+                if (service_type == 'ПАТЕНТ')  { 
+                    emloyee_price = excelTable_main[excelTable_main.length - 1].__EMPTY_11;  }
+                if (service_type == 'ЕНВД')    { 
+                    emloyee_price = excelTable_main[excelTable_main.length - 1].__EMPTY_14;  }
 
-                if ($('#trust_salaryAndStaff').hasClass('checked') == true) {
-                    if (parseInt($('#employee_input').val()) <= 1) { get_epml_summ = 0 }
-                    else { get_epml_summ = parseInt($('#employee_input').val()) * emloyee_price - emloyee_price }
-                }   else { get_epml_summ = 0 }
+                calc_price_count.text(emloyee_price);    
+            } else {
+                if (transactions <= parseInt(to) && transactions >= parseInt(from)) {
+                    let price = 0;
+                    let emloyee_price = 0;
 
-                calc_price_count.text(price + get_epml_summ);
-            } 
+                    if (service_type == 'ОСНО') { 
+                        price = excelTable_main[i].__EMPTY_2;  
+                        emloyee_price = excelTable_main[i].__EMPTY_4;
+                    }
+                    if (service_type == 'УСН 15%') { 
+                        price = excelTable_main[i].__EMPTY_5;  
+                        emloyee_price = excelTable_main[i].__EMPTY_7;
+                    }
+                    if (service_type == 'УСН 6%') { 
+                        price = excelTable_main[i].__EMPTY_8; 
+                        emloyee_price = excelTable_main[i].__EMPTY_10;
+                    }
+                    if (service_type == 'ПАТЕНТ') { 
+                        price = excelTable_main[i].__EMPTY_11; 
+                        emloyee_price = excelTable_main[i].__EMPTY_13;
+                    }
+                    if (service_type == 'ЕНВД') { 
+                        price = excelTable_main[i].__EMPTY_14; 
+                        emloyee_price = excelTable_main[i].__EMPTY_16;
+                    }
+                    
+                    let get_epml_summ = 0;
+
+                    if ($('#trust_salaryAndStaff').hasClass('checked') == true) {
+                        if (parseInt($('#employee_input').val()) <= 1) { get_epml_summ = 0 }
+                        else { get_epml_summ = parseInt($('#employee_input').val()) * emloyee_price - emloyee_price }
+                    }   else { get_epml_summ = 0 }
+
+                    calc_price_count.text(price + get_epml_summ);
+                } 
+            }
         }
     }
     final_price_handler();
