@@ -86,6 +86,7 @@ function next() {
         if (this.value == 1) { third_tariff()  }
         if (this.value == 0) { fourth_tariff() }
     })
+
     $('.calculator__tarrifs-item').click(function() {
         if (this.innerText == 'КОМЛЕКСНЫЙ')        { $('.calculator__tarrifs-range').val(3); first_tariff();          }
         if (this.innerText == 'ИП БЕЗ РАБОТНИКОВ') { $('.calculator__tarrifs-range').val(2); second_tariff();         }
@@ -229,20 +230,35 @@ function next() {
         // Переключатель "Доверяю вам" Второй тариф
 
         // Обработчик для спанов при переключении Input Range
-        $('.calculator__taxation-range').change(function(){
+        $('.calculator__taxation-step-item').click(function() {
+            change_main_spans(this);
+        })
+        $('.calculator__taxation-range').change(function() {
+            change_main_spans(this);
+        })   
+        function change_main_spans(el) {
             for (let g = 0; g < $('.calculator__taxation-step-item').length; g++) {
-                if ($('.calculator__taxation-step-item')[g].getAttribute('data-step') == this.value) {
-                    $($('.calculator__taxation-step-item')[g]).addClass('calculator__taxation-step-item_active')
-                    let span = $('.calculator__taxation-step-item')[g].innerText
-                    get_sum(sum_fields(), span, 'ИП без работников');
-                    inputs_handlers(span);
-                    change_trusts(span)
-                    trust_we_handler(span, 'Комплексный и ИП без работников', 'ИП без работников');
-                } else {
-                    $($('.calculator__taxation-step-item')[g]).removeClass('calculator__taxation-step-item_active');
-                }     
+                if ($('.calculator__taxation-step-item')[g].getAttribute('data-step') == el.value) {
+                    $($('.calculator__taxation-step-item')[g]).addClass('calculator__taxation-step-item_active');
+                    get_sum(sum_fields(), $('.calculator__taxation-step-item')[g].innerText, 'ИП без работников')
+                    inputs_handlers($('.calculator__taxation-step-item')[g].innerText);
+                    change_trusts($('.calculator__taxation-step-item')[g].innerText);
+                    trust_we_handler($('.calculator__taxation-step-item')[g].innerText, 'Комплексный и ИП без работников', 'ИП без работников');
+                } 
+                else {
+                    $($('.calculator__taxation-step-item')[g]).removeClass('calculator__taxation-step-item_active')
+                }  
+                if ($(el).hasClass('calculator__taxation-step-item')) {
+                    $(el).addClass('calculator__taxation-step-item_active')
+                    $('.calculator__taxation-range')[0].value = $(el).attr('data-step');
+                    change_trusts(el.innerText);
+                    get_sum(sum_fields(), el.innerText, 'ИП без работников');
+                    inputs_handlers(el.innerText);
+                    trust_we_handler(el.innerText, 'Комплексный и ИП без работников', 'ИП без работников');
+                }
             }
-        }) 
+        }
+        // Обработчик для спанов при переключении Input Range  
     }
 
     // Отчетность
@@ -366,7 +382,6 @@ function next() {
         staff_count >= 16 && staff_count <= 30  ? salary_sum = table[3][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 31 && staff_count <= 50  ? salary_sum = table[4][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 51 && staff_count <= 100 ? salary_sum = table[5][row] * emloyee_counter.val() : salary_sum = salary_sum;
-        salary_sum = table[1][row] + salary_sum;
 
         return salary_sum;
     }
