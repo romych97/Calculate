@@ -515,5 +515,5 @@ function sum_fields() {
 
 
 function final_price_handler() {
-    $('.calculator__price-count').text(parseFloat($('.calculator__price-count').text()).toFixed(1))
+    $('.calculator__price-count').text(Math.ceil(parseFloat($('.calculator__price-count').text())))
 };
