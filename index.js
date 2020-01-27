@@ -438,8 +438,8 @@ function next() {
 
 // Подсчет суммы для тарифов "Комплексный" и "ИП Без работников"
 function get_sum(transactions, service_type, tariff_type) {
-   console.log(transactions)
     transactions = parseFloat(transactions);
+
     if (tariff_type == 'ООО') { 
         service_type == 'ПАТЕНТ' ? service_type = 'Патент' : service_type = service_type
         for (let i = 0; i < excelTable_main.length; i++) {
@@ -506,9 +506,6 @@ function get_sum(transactions, service_type, tariff_type) {
                     }
 
                     let final = price + get_epml_summ;
-
-
-                    console.log(price + get_epml_summ)
                     calc_price_count.text(final);
                 }
             }
@@ -625,10 +622,7 @@ function addClassSpans_lastTariff() {
 }
 
 function fields_checker(el) {
-    console.log(el)
-    console.log(el.value[0])
     if (el.value[0] == 0 && el.value.length > 1) {
-        console.log(' 0 !!!!!!')
         el.value = el.value.slice(1);
     }
     if (el.value == '') {
@@ -640,6 +634,19 @@ function final_price_handler() {
     $('.calculator__price-count').text(Math.ceil(parseFloat($('.calculator__price-count').text())).toLocaleString())
     let price = $('.calculator__price-count').text();
 };
+
+$('.calculator__activity-item').find('input').change(function() {
+
+    let count = 0;
+    for (let index = 0; index < $('.calculator__activity-item').find('input').length; index++) {
+        if ($('.calculator__activity-item').find('input')[index].checked == true) {
+            count ++;
+        }
+    }
+
+    if (count == 0) { $('#services')[0].checked = true }
+    console.log(count)
+})
 
 // Оставить заявку
 $('.btn.btn_calculator').click(function() {
