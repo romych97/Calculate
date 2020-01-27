@@ -391,7 +391,8 @@ function next() {
         staff_count >= 16 && staff_count <= 30  ? salary_sum = table[3][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 31 && staff_count <= 50  ? salary_sum = table[4][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 51 && staff_count <= 100 ? salary_sum = table[5][row] * emloyee_counter.val() : salary_sum = salary_sum;
-
+        console.log(staff_count)
+        console.log(salary_sum)
         return salary_sum;
     }
 
@@ -577,6 +578,12 @@ $('.btn.btn_calculator').click(function() {
     for (let index = 0; index < $('.calculator__activity-list').find('input').length; index++) {
         if ($('.calculator__activity-list').find('input')[index].checked == true) {
             tariff.select_services += $('.calculator__activity-list').find('input')[index].id + ', '
+        }
+    }
+    // Выбранная услуга
+    for (let index = 0; index < $('.calculator__taxation-step-item').length; index++) {
+        if ($($('.calculator__taxation-step-item')[index]).hasClass('calculator__taxation-step-item_active')== true) {
+            tariff.service = $('.calculator__taxation-step-item')[index].innerText
         }
     }
     
