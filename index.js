@@ -325,7 +325,7 @@ function next() {
                     change_trust('Зарплата');
 
                     if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
-                        calc_price_count.text(excelTable_salary[1]['Зарплата'].toLocaleString());
+                        calc_price_count.text(excelTable_salary[1]['Зарплата']);
                     }
                 }
 
@@ -334,7 +334,7 @@ function next() {
                     change_trust('Зарплата и кадры');
 
                     if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
-                        calc_price_count.text(excelTable_salary[1]['Зарплата и кадры'].toLocaleString());
+                        calc_price_count.text(excelTable_salary[1]['Зарплата и кадры']);
                     }
                 }
             }            
@@ -342,10 +342,10 @@ function next() {
         function change_trust(what) {
             $('#trust_salaryAndStaff').click(function() {
                 if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
-                    calc_price_count.text(excelTable_salary[1][what].toLocaleString());
+                    calc_price_count.text(excelTable_salary[1][what]);
                 }
                 else {
-                    calc_price_count.text(count($('#employee_input').val(), excelTable_salary, what).toLocaleString());
+                    calc_price_count.text(count($('#employee_input').val(), excelTable_salary, what));
                 }
             });
         }
@@ -354,17 +354,17 @@ function next() {
             emloyee_counter.keyup(function() {
                 if (this.value > 100) { this.value = 99 }
                 if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
-                    calc_price_count.text(excelTable_salary[1][service_type].toLocaleString());
+                    calc_price_count.text(excelTable_salary[1][service_type]);
                     return false; 
                 }
                 else {
-                    calc_price_count.text(count(this.value, excelTable_salary, service_type).toLocaleString());
+                    calc_price_count.text(count(this.value, excelTable_salary, service_type));
                 }
             });
         }
 
         function start_change(service_type) {
-            calc_price_count.text(count(emloyee_counter.val(), excelTable_salary, service_type).toLocaleString());
+            calc_price_count.text(count(emloyee_counter.val(), excelTable_salary, service_type));
         }
 
         change_employee('Зарплата');
@@ -377,7 +377,7 @@ function next() {
         $('#staff_span').addClass('item-active')
 
         if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
-            calc_price_count.text(excelTable_salary[1]['Зарплата'].toLocaleString());
+            calc_price_count.text(excelTable_salary[1]['Зарплата']);
         }
     }
 
@@ -550,9 +550,6 @@ function addClassSpans_lastTariff() {
 function fields_checker(el) {
     if (el.value == '') {
         el.value = 0;
-    }
-    if (el.value > 100) {
-        el.value = 99;
     }
 }
 
