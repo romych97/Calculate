@@ -128,13 +128,7 @@ function next() {
         // Переключатель "Доверяю вам" первый тариф  
         change_trusts('ОСНО');
         function change_trusts(what) {
-
             $('#trust_salaryAndStaff').click(function() {
-                console.log('ass')
-                let staff_count = 0
-                console.log(get_sum(sum_fields(), what, 'ООО'))
-                console.log(sum_fields())
-                console.log(what)
                 if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
                     get_sum(sum_fields(), what, 'ООО')
                 }
@@ -153,7 +147,6 @@ function next() {
             });
 
             $('#dealsClients_trust_span').click(function() {
-
                 if ($('#dealsClients_trust_span').hasClass('checked') == false) {
                     get_sum(sum_fields(), what, 'ООО')
                 }
@@ -178,6 +171,7 @@ function next() {
                     $($('.calculator__taxation-step-item')[g]).addClass('calculator__taxation-step-item_active');
                     get_sum(sum_transactions, $('.calculator__taxation-step-item')[g].innerText, 'ООО')
                     inputs_handler($('.calculator__taxation-step-item')[g].innerText);
+                    change_trusts($('.calculator__taxation-step-item')[g].innerText);
                     trust_we_handler($('.calculator__taxation-step-item')[g].innerText, 'Комплексный и ИП без работников', 'ООО');
                 } 
                 else {
@@ -185,8 +179,9 @@ function next() {
                 }  
                 if ($(el).hasClass('calculator__taxation-step-item')) {
                     $(el).addClass('calculator__taxation-step-item_active')
-                    $('.calculator__taxation-range')[0].value = $(el).attr('data-step')
-                    get_sum(sum_transactions, el.innerText, 'ООО')
+                    $('.calculator__taxation-range')[0].value = $(el).attr('data-step');
+                    change_trusts(el.innerText);
+                    get_sum(sum_transactions, el.innerText, 'ООО');
                     inputs_handler(el.innerText);
                     trust_we_handler(el.innerText, 'Комплексный и ИП без работников', 'ООО');
                 }
