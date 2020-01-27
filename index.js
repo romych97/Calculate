@@ -113,6 +113,7 @@ function next() {
         function inputs_handler(service_type) {
             // Сделок с поставщиками
             $('#transactions_suppliers').keyup(function(){
+                fields_checker(this)
                 sum_transactions = parseInt(this.value) + parseInt(transactions_suppliers.val())
                 get_sum(sum_fields(), service_type, 'ООО');
                 trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ООО');
@@ -120,6 +121,7 @@ function next() {
 
             // Сделок с клиентами
             $('#transactions_buyers').keyup(function(){
+                fields_checker(this)
                 sum_transactions = parseInt(this.value) + parseInt(transactions_buyers.val())
                 get_sum(sum_fields(), service_type, 'ООО');
                 trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ООО');
@@ -127,6 +129,7 @@ function next() {
 
             // Штатных сотрудников
             $('#employee_input').keyup(function(){
+                fields_checker(this)
                 sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
                 get_sum(sum_fields(), service_type, 'ООО');
                 trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ООО');
@@ -195,18 +198,21 @@ function next() {
         function inputs_handlers(service_type) {
             // Сделок с поставщиками
             $('#transactions_suppliers').keyup(function() {
+                fields_checker(this)
                 get_sum(sum_fields(), service_type, 'ИП без работников');
                 trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ИП без работников');
             })     
 
             // Сделок с клиентами
             $('#transactions_buyers').keyup(function() {
+                fields_checker(this)
                 get_sum(sum_fields(), service_type, 'ИП без работников');
                 trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ИП без работников');
             })     
 
             // Штатных сотрудников
             $('#employee_input').keyup(function() {
+                fields_checker(this)
                 get_sum(sum_fields(), service_type, 'ИП без работников');
                 trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ИП без работников', );
             })     
@@ -309,26 +315,36 @@ function next() {
 
         $('.calculator__taxation-range').replaceWith(salaryAndStaff_horisontal_input);
 
-        $('.calculator__taxation-range').change(function() { 
-            if (this.value == 0) {
-                change_employee('Зарплата'); start_change('Зарплата'); 
-                change_trust('Зарплата');
+        $('.calculator__taxation-range').change(function() {
+            st(this.value);
+            addClassSpans_lastTariff();
+        }) 
+        $('.calculator__taxation-step-item').click(function() {
+            st(this.getAttribute('data-step'));
 
-                if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
-                     calc_price_count.text(excelTable_salary[1]['Зарплата']);
+            $('.calculator__taxation-range').val(this.getAttribute('data-step'));
+            addClassSpans_lastTariff();
+        }) 
+
+            function st(el) {
+                if (el == 0) {
+                    change_employee('Зарплата'); start_change('Зарплата'); 
+                    change_trust('Зарплата');
+
+                    if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
+                        calc_price_count.text(excelTable_salary[1]['Зарплата']);
+                    }
                 }
-            }
 
-            if (this.value == 1) { 
-                change_employee('Зарплата и кадры'); start_change('Зарплата и кадры'); 
-                change_trust('Зарплата и кадры');
+                if (el == 1) { 
+                    change_employee('Зарплата и кадры'); start_change('Зарплата и кадры'); 
+                    change_trust('Зарплата и кадры');
 
-                if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
-                     calc_price_count.text(excelTable_salary[1]['Зарплата и кадры']);
+                    if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
+                        calc_price_count.text(excelTable_salary[1]['Зарплата и кадры']);
+                    }
                 }
-            }
-            
-        })
+            }            
 
         function change_trust(what) {
             $('#trust_salaryAndStaff').click(function() {
@@ -528,6 +544,21 @@ function sum_fields() {
 }
 // Подсчет суммы ! полей ! для тарифов "Комплексный" и "ИП Без работников"
 
+function addClassSpans_lastTariff() {
+    for (let index = 0; index < $('.calculator__taxation-step-item').length; index++) {
+        if ( $($('.calculator__taxation-step-item')[index]).hasClass('calculator__taxation-step-item_active')) {
+            $($('.calculator__taxation-step-item')[index]).removeClass('calculator__taxation-step-item_active');
+        } else {
+            $($('.calculator__taxation-step-item')[index]).addClass('calculator__taxation-step-item_active');
+        }
+    }
+}
+
+function fields_checker(el) {
+    if (el.value == '') {
+        el.value = 0;
+    }
+}
 
 function final_price_handler() {
     $('.calculator__price-count').text(Math.ceil(parseFloat($('.calculator__price-count').text())))
