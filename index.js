@@ -625,6 +625,12 @@ function addClassSpans_lastTariff() {
 }
 
 function fields_checker(el) {
+    console.log(el)
+    console.log(el.value[0])
+    if (el.value[0] == 0 && el.value.length > 1) {
+        console.log(' 0 !!!!!!')
+        el.value = el.value.slice(1);
+    }
     if (el.value == '') {
         el.value = 0;
     }
