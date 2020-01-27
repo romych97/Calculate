@@ -438,7 +438,8 @@ function next() {
 
 // Подсчет суммы для тарифов "Комплексный" и "ИП Без работников"
 function get_sum(transactions, service_type, tariff_type) {
-   
+   console.log(transactions)
+    transactions = parseFloat(transactions);
     if (tariff_type == 'ООО') { 
         service_type == 'ПАТЕНТ' ? service_type = 'Патент' : service_type = service_type
         for (let i = 0; i < excelTable_main.length; i++) {
