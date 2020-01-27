@@ -558,8 +558,12 @@ function fields_checker(el) {
     if (el.value == '') {
         el.value = 0;
     }
+    if (el.value > 100) {
+        el.value = 99;
+    }
 }
 
 function final_price_handler() {
-    $('.calculator__price-count').text(Math.ceil(parseFloat($('.calculator__price-count').text())))
+    // Math.round(33333).toLocaleString("ru-RU", {style: "currency", currency: 'RUB'})
+    $('.calculator__price-count').text(Math.ceil(parseFloat($('.calculator__price-count').text())).toLocaleString())
 };
