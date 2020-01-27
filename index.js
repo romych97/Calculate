@@ -351,7 +351,7 @@ function next() {
 
         function change_employee(service_type) {
             emloyee_counter.keyup(function() {
-                if (this.value > 100) { this.value = 99 }
+                if (this.value > 100) { this.value = this.value }
                 if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
                     calc_price_count.text(excelTable_salary[1][service_type].toLocaleString());
                     return false; 
@@ -390,6 +390,7 @@ function next() {
         staff_count >= 16 && staff_count <= 30  ? salary_sum = table[3][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 31 && staff_count <= 50  ? salary_sum = table[4][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 51 && staff_count <= 100 ? salary_sum = table[5][row] * emloyee_counter.val() : salary_sum = salary_sum;
+        staff_count > 100                       ? salary_sum = table[5][row] * emloyee_counter.val() : salary_sum = salary_sum;
 
         return salary_sum;
     }
