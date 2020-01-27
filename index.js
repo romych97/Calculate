@@ -25,21 +25,13 @@ let data = [];
 
 // Вешаем обрабочики на чекбоксы Розничная торговля и сервис
 retail_checkbox.onclick = function() {
-    if (this.checked == true) {
-        $('#term').addClass('required')
-    } 
-    if (this.checked == false && service_checkbox.checked == false) {
-        $('#term').removeClass('required') 
-    }
+    if (this.checked == true) { $('#term').addClass('required') } 
+    if (this.checked == false && service_checkbox.checked == false) { $('#term').removeClass('required') }
 }
 
 service_checkbox.onclick = function() {
-    if (this.checked == true) {
-        $('#term').addClass('required')
-    } 
-    if (this.checked == false && retail_checkbox.checked == false) {
-        $('#term').removeClass('required') 
-    }
+    if (this.checked == true) { $('#term').addClass('required') } 
+    if (this.checked == false && retail_checkbox.checked == false) { $('#term').removeClass('required') }
 }
 // Вешаем обрабочики на чекбоксы Розничная торговля и сервис
 
@@ -269,11 +261,12 @@ function next() {
 
     // Отчетность
     function third_tariff() {
+        
         handler();
         get_span(tariff_span, 1);
 
         $('.calculator__activity').fadeOut(0); $('.calculator__count').fadeOut(0);
-        calc_price_count.text(excelTable_report[0]['ОСНО']);
+        calc_price_count.text(excelTable_report[0]['ОСНО'].toLocaleString());
 
         $('.calculator__taxation-range').change(function() {
             for (let i = 0; i < $('.calculator__taxation-step-item').length; i++) {
@@ -298,11 +291,11 @@ function next() {
         });
 
         function change_val(el) {
-            if (el == 0) { calc_price_count.text(excelTable_report[0]['ОСНО'])    }
-            if (el == 1) { calc_price_count.text(excelTable_report[0]['УСН 15%']) }
-            if (el == 2) { calc_price_count.text(excelTable_report[0]['УСН 6%'])  }
-            if (el == 3) { calc_price_count.text(excelTable_report[0]['Патент'])  }
-            if (el == 4) { calc_price_count.text(excelTable_report[0]['ЕНВД'])    }
+            if (el == 0) { calc_price_count.text(excelTable_report[0]['ОСНО'].toLocaleString())    }
+            if (el == 1) { calc_price_count.text(excelTable_report[0]['УСН 15%'].toLocaleString()) }
+            if (el == 2) { calc_price_count.text(excelTable_report[0]['УСН 6%'].toLocaleString())  }
+            if (el == 3) { calc_price_count.text(excelTable_report[0]['Патент'].toLocaleString())  }
+            if (el == 4) { calc_price_count.text(excelTable_report[0]['ЕНВД'].toLocaleString())    }
         }
     }
 
@@ -332,7 +325,7 @@ function next() {
                     change_trust('Зарплата');
 
                     if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
-                        calc_price_count.text(excelTable_salary[1]['Зарплата']);
+                        calc_price_count.text(excelTable_salary[1]['Зарплата'].toLocaleString());
                     }
                 }
 
@@ -341,7 +334,7 @@ function next() {
                     change_trust('Зарплата и кадры');
 
                     if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
-                        calc_price_count.text(excelTable_salary[1]['Зарплата и кадры']);
+                        calc_price_count.text(excelTable_salary[1]['Зарплата и кадры'].toLocaleString());
                     }
                 }
             }            
@@ -349,10 +342,10 @@ function next() {
         function change_trust(what) {
             $('#trust_salaryAndStaff').click(function() {
                 if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
-                    calc_price_count.text(excelTable_salary[1][what]);
+                    calc_price_count.text(excelTable_salary[1][what].toLocaleString());
                 }
                 else {
-                    calc_price_count.text(count($('#employee_input').val(), excelTable_salary, what));
+                    calc_price_count.text(count($('#employee_input').val(), excelTable_salary, what).toLocaleString());
                 }
             });
         }
@@ -361,17 +354,17 @@ function next() {
             emloyee_counter.keyup(function() {
                 if (this.value > 100) { this.value = 99 }
                 if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
-                    calc_price_count.text(excelTable_salary[1][service_type]);
+                    calc_price_count.text(excelTable_salary[1][service_type].toLocaleString());
                     return false; 
                 }
                 else {
-                    calc_price_count.text(count(this.value, excelTable_salary, service_type));
+                    calc_price_count.text(count(this.value, excelTable_salary, service_type).toLocaleString());
                 }
             });
         }
 
         function start_change(service_type) {
-            calc_price_count.text(count(emloyee_counter.val(), excelTable_salary, service_type));
+            calc_price_count.text(count(emloyee_counter.val(), excelTable_salary, service_type).toLocaleString());
         }
 
         change_employee('Зарплата');
@@ -384,7 +377,7 @@ function next() {
         $('#staff_span').addClass('item-active')
 
         if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
-            calc_price_count.text(excelTable_salary[1]['Зарплата']);
+            calc_price_count.text(excelTable_salary[1]['Зарплата'].toLocaleString());
         }
     }
 
@@ -564,6 +557,40 @@ function fields_checker(el) {
 }
 
 function final_price_handler() {
-    // Math.round(33333).toLocaleString("ru-RU", {style: "currency", currency: 'RUB'})
     $('.calculator__price-count').text(Math.ceil(parseFloat($('.calculator__price-count').text())).toLocaleString())
+    let price = $('.calculator__price-count').text();
 };
+
+// Оставить заявку
+$('.btn.btn_calculator').click(function() {
+    let tariff = {};
+
+    tariff.type = $('.calculator__tarrifs-item_active').text();
+    tariff.price = $('.calculator__price-count').text();
+    tariff.suppliers = {'count' : $('#transactions_suppliers').val()};
+    tariff.buyers = {'count' : $('#transactions_buyers').val()};
+    tariff.employers = {'count' : $('#employee_input').val()};
+    tariff.select_services = '';
+
+    $('#dealsSuppliers_trust_span').hasClass('checked') == true ? tariff.suppliers.trust_we = 'Доверяет ведение нам' : tariff.suppliers.trust_we = 'Не доверяет ведение нам'
+    $('#dealsClients_trust_span').hasClass('checked') == true ? tariff.buyers.trust_we = 'Доверяет ведение нам' : tariff.buyers.trust_we = 'Не доверяет ведение нам'
+    $('#trust_salaryAndStaff').hasClass('checked') == true ? tariff.employers.trust_we = 'Доверяет ведение нам' : tariff.employers.trust_we = 'Не доверяет ведение нам'
+
+    // Выбранные виды деятельности
+    for (let index = 0; index < $('.calculator__activity-list').find('input').length; index++) {
+        if ($('.calculator__activity-list').find('input')[index].checked == true) {
+            tariff.select_services += $('.calculator__activity-list').find('input')[index].id + ', '
+        }
+    }
+    
+    if (tariff.type == 'Отчетность') { 
+        delete tariff.buyers    ; delete tariff.suppliers       ;
+        delete tariff.employers ; delete tariff.select_services ;
+    }
+    if (tariff.type == 'Зарплата и кадры') { 
+        delete tariff.buyers          ; delete tariff.suppliers ;
+        delete tariff.select_services ;
+    }
+
+    console.log(tariff)
+})
