@@ -24,7 +24,6 @@ let data = [];
 
 // Вешаем обрабочики на чекбоксы Розничная торговля и сервис
 retail_checkbox.onclick = function() {
-    console.log(this)
     if (this.checked == true) {
         $('#term').addClass('required')
     } 
@@ -34,7 +33,6 @@ retail_checkbox.onclick = function() {
 }
 
 service_checkbox.onclick = function() {
-    console.log(retail_checkbox.checked)
     if (this.checked == true) {
         $('#term').addClass('required')
     } 
@@ -102,79 +100,185 @@ function next() {
         get_sum(sum_transactions, 'ОСНО', 'ООО');
 
         inputs_handler('ОСНО');
+        trust_we_handler('ОСНО', 'Комплексный и ИП без работников', 'ООО');
+
         function inputs_handler(service_type) {
             // Сделок с поставщиками
-            $('#transactions_suppliers').change(function(){
+            $('#transactions_suppliers').keyup(function(){
                 sum_transactions = parseInt(this.value) + parseInt(transactions_suppliers.val())
                 get_sum(sum_transactions, service_type, 'ООО');
+                trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ООО');
             })     
 
             // Сделок с клиентами
-            $('#transactions_buyers').change(function(){
+            $('#transactions_buyers').keyup(function(){
                 sum_transactions = parseInt(this.value) + parseInt(transactions_buyers.val())
                 get_sum(sum_transactions, service_type, 'ООО');
+                trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ООО');
             })     
 
             // Штатных сотрудников
-            $('#employee_input').change(function(){
+            $('#employee_input').keyup(function(){
                 sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
                 get_sum(sum_transactions, service_type, 'ООО');
+                trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ООО');
             })     
         }
 
+        // Переключатель "Доверяю вам" первый тариф  
+        change_trusts('ОСНО');
+        function change_trusts(what) {
+
+            $('#trust_salaryAndStaff').click(function() {
+                console.log('ass')
+                let staff_count = 0
+                console.log(get_sum(sum_fields(), what, 'ООО'))
+                console.log(sum_fields())
+                console.log(what)
+                if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
+                    get_sum(sum_fields(), what, 'ООО')
+                }
+                else {
+                    get_sum(sum_fields(), what, 'ООО')
+                }
+            });
+
+            $('#dealsSuppliers_trust_span').click(function() {
+                if ($('#dealsSuppliers_trust_span').hasClass('checked') == false) {
+                    get_sum(sum_fields(), what, 'ООО')
+                }
+                else {
+                    get_sum(sum_fields(), what, 'ООО')
+                }
+            });
+
+            $('#dealsClients_trust_span').click(function() {
+
+                if ($('#dealsClients_trust_span').hasClass('checked') == false) {
+                    get_sum(sum_fields(), what, 'ООО')
+                }
+                else {
+                    get_sum(sum_fields(), what, 'ООО')  
+                }
+            });
+        }
+        // Переключатель "Доверяю вам" Второй тариф
+
         // Обработчик для спанов при переключении Input Range
-        $('.calculator__taxation-range').change(function(){
+        $('.calculator__taxation-step-item').click(function() {
+            change_main_spans(this);
+        })
+        $('.calculator__taxation-range').change(function() {
+            change_main_spans(this);
+        })   
+
+        function change_main_spans(el) {
             for (let g = 0; g < $('.calculator__taxation-step-item').length; g++) {
-                if ($('.calculator__taxation-step-item')[g].getAttribute('data-step') == this.value) {
-                    $($('.calculator__taxation-step-item')[g]).addClass('calculator__taxation-step-item_active')
+                if ($('.calculator__taxation-step-item')[g].getAttribute('data-step') == el.value) {
+                    $($('.calculator__taxation-step-item')[g]).addClass('calculator__taxation-step-item_active');
                     get_sum(sum_transactions, $('.calculator__taxation-step-item')[g].innerText, 'ООО')
                     inputs_handler($('.calculator__taxation-step-item')[g].innerText);
-                } else {
+                    trust_we_handler($('.calculator__taxation-step-item')[g].innerText, 'Комплексный и ИП без работников', 'ООО');
+                } 
+                else {
                     $($('.calculator__taxation-step-item')[g]).removeClass('calculator__taxation-step-item_active')
-                }     
+                }  
+                if ($(el).hasClass('calculator__taxation-step-item')) {
+                    $(el).addClass('calculator__taxation-step-item_active')
+                    $('.calculator__taxation-range')[0].value = $(el).attr('data-step')
+                    get_sum(sum_transactions, el.innerText, 'ООО')
+                    inputs_handler(el.innerText);
+                    trust_we_handler(el.innerText, 'Комплексный и ИП без работников', 'ООО');
+                }
             }
-        })     
+        }
+        // Обработчик для спанов при переключении Input Range  
     }
     first_tariff();
 
     // Тариф ИП БЕЗ РАБОТНИКОВ
     function second_tariff() {
         handler();
-        get_span(tariff_span, 2)
-        $('.calculator__activity').fadeIn(500)
-        $('.calculator__count').fadeIn(500)
+        get_span(tariff_span, 2);
+        trust_we_handler('ОСНО', 'Комплексный и ИП без работников', 'ИП без работников');
+        get_sum(sum_transactions, 'ОСНО', 'ИП без работников');       
+        inputs_handlers('ОСНО');
+        
+        $('.calculator__activity').fadeIn(0); $('.calculator__count').fadeIn(0);
 
         sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
-        get_sum(sum_transactions, 'ОСНО', 'ИП без работников');       
-        
-        inputs_handlers('ОСНО');
+ 
         function inputs_handlers(service_type) {
             // Сделок с поставщиками
-            $('#transactions_suppliers').change(function(){
+            $('#transactions_suppliers').keyup(function(){
                 sum_transactions = parseInt(this.value) + parseInt(transactions_suppliers.val())
                 get_sum(sum_transactions, service_type, 'ИП без работников');
+                trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ИП без работников');
             })     
 
             // Сделок с клиентами
-            $('#transactions_buyers').change(function(){
+            $('#transactions_buyers').keyup(function(){
                 sum_transactions = parseInt(this.value) + parseInt(transactions_buyers.val())
                 get_sum(sum_transactions, service_type, 'ИП без работников');
+                trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ИП без работников');
             })     
 
             // Штатных сотрудников
-            $('#employee_input').change(function(){
+            $('#employee_input').keyup(function(){
                 sum_transactions = parseInt(transactions_suppliers.val()) + parseInt(transactions_buyers.val())
                 get_sum(sum_transactions, service_type, 'ИП без работников');
+                trust_we_handler(service_type, 'Комплексный и ИП без работников', 'ИП без работников', );
             })     
         }
+
+        // Переключатель "Доверяю вам" Второй тариф  
+        change_trusts('ОСНО');
+        function change_trusts(what) {
+
+            $('#trust_salaryAndStaff').click(function() {
+                let staff_count = 0
+
+                if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
+                    get_sum(sum_fields(), what, 'ИП без работников')
+                }
+                else {
+                    get_sum(sum_fields(), what, 'ИП без работников')
+                }
+
+            });
+
+            $('#dealsSuppliers_trust_span').click(function() {
+
+                if ($('#dealsSuppliers_trust_span').hasClass('checked') == false) {
+                    get_sum(sum_fields(), what, 'ИП без работников')
+                }
+                else {
+                    get_sum(sum_fields(), what, 'ИП без работников')
+                }
+
+            });
+
+            $('#dealsClients_trust_span').click(function() {
+                if ($('#dealsClients_trust_span').hasClass('checked') == false) {
+                    get_sum(sum_fields(), what, 'ИП без работников')
+                }
+                else {
+                    get_sum(sum_fields(), what, 'ИП без работников')                 
+                }
+            });
+        }
+        // Переключатель "Доверяю вам" Второй тариф
 
         // Обработчик для спанов при переключении Input Range
         $('.calculator__taxation-range').change(function(){
             for (let g = 0; g < $('.calculator__taxation-step-item').length; g++) {
                 if ($('.calculator__taxation-step-item')[g].getAttribute('data-step') == this.value) {
                     $($('.calculator__taxation-step-item')[g]).addClass('calculator__taxation-step-item_active')
-                    get_sum(sum_transactions, $('.calculator__taxation-step-item')[g].innerText, 'ИП без работников')
-                    inputs_handlers($('.calculator__taxation-step-item')[g].innerText);
+                    let span = $('.calculator__taxation-step-item')[g].innerText
+                    get_sum(sum_transactions, span, 'ИП без работников')
+                    inputs_handlers(span);
+                    change_trusts(span)
+                    trust_we_handler(span, 'Комплексный и ИП без работников', 'ИП без работников');
                 } else {
                     $($('.calculator__taxation-step-item')[g]).removeClass('calculator__taxation-step-item_active')
                 }     
@@ -186,56 +290,105 @@ function next() {
     function third_tariff() {
         handler();
         get_span(tariff_span, 1)
-        $('.calculator__activity').fadeOut(500)
-        $('.calculator__count').fadeOut(500);
-        $('.calculator__price-count').text(excelTable_report[0]['ОСНО'])
+        $('.calculator__activity').fadeOut(0)
+        $('.calculator__count').fadeOut(0);
+        $('.calculator__price-count').text(excelTable_report[0]['ОСНО']);
 
         $('.calculator__taxation-range').change(function() {
-            if (this.value == 0) {
+            for (let i = 0; i < $('.calculator__taxation-step-item').length; i++) {
+               if ($('.calculator__taxation-step-item')[i].getAttribute('data-step') == this.value) {
+                   $($('.calculator__taxation-step-item')[i]).addClass('calculator__taxation-step-item_active');
+               } else {
+                   $($('.calculator__taxation-step-item')[i]).removeClass('calculator__taxation-step-item_active');
+               }
+            }
+            change_val(this.value);
+        });
+
+        $('.calculator__taxation-step-item').click(function() {
+            for (let i = 0; i < $('.calculator__taxation-step-item').length; i++) {
+               if ($('.calculator__taxation-step-item')[i] != this) {
+                   $($('.calculator__taxation-step-item')[i]).removeClass('calculator__taxation-step-item_active');
+               }
+            }
+            $('.calculator__taxation-range').val($(this)[0].getAttribute('data-step'));
+            $(this).addClass('calculator__taxation-step-item_active');
+            change_val(this.getAttribute('data-step'));
+        });
+
+        function change_val(el) {
+            if (el == 0) {
                 $('.calculator__price-count').text(excelTable_report[0]['ОСНО'])
             }
-            if (this.value == 1) {
+            if (el == 1) {
                 $('.calculator__price-count').text(excelTable_report[0]['УСН 15%'])
             }
-            if (this.value == 2) {
+            if (el == 2) {
                 $('.calculator__price-count').text(excelTable_report[0]['УСН 6%'])        
             }
-            if (this.value == 3) {
+            if (el == 3) {
                 $('.calculator__price-count').text(excelTable_report[0]['Патент'])
             }
-            if (this.value == 4) {
+            if (el == 4) {
                 $('.calculator__price-count').text(excelTable_report[0]['ЕНВД']) 
             }
-        })
+        }
     }
 
     // Зарплата и кадры
     function fourth_tariff() {
-        trust_we_handler('', 'Зарплата');
+        // trust_we_handler('Заработная плата', 'Зарплата и кадры', '');
 
         horisontal_spans[0].innerHTML = salaryAndStaff_inner
-        get_span(tariff_span, 0)
+        get_span(tariff_span, 0);
+        change_trust('Зарплата');
 
         $('.calculator__taxation-range').replaceWith(salaryAndStaff_horisontal_input);
 
-        $('.calculator__taxation-range').change(function() {
+        $('.calculator__taxation-range').change(function() { 
             if (this.value == 0) {
-                change_employee('Зарплата')
-                trust_we_handler('', 'Зарплата');
-                start_change('Зарплата')
+                change_employee('Зарплата');
+                start_change('Зарплата');
+                change_trust('Зарплата');
+
+                if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
+                     $('.calculator__price-count').text(excelTable_salary[1]['Зарплата']);
+                }
             }
 
             if (this.value == 1) { 
                 change_employee('Зарплата и кадры');
-                trust_we_handler('', 'Зарплата и кадры')
                 start_change('Зарплата и кадры');
+                change_trust('Зарплата и кадры');
+
+                if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
+                     $('.calculator__price-count').text(excelTable_salary[1]['Зарплата и кадры']);
+                }
             }
+            
         })
 
+        function change_trust(what) {
+            $('#trust_salaryAndStaff').click(function() {
+                if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
+                    $('.calculator__price-count').text(excelTable_salary[1][what]);
+                }
+                else {
+                    $('.calculator__price-count').text(count($('#employee_input').val(), excelTable_salary, what));
+                }
+            });
+        }
+
         function change_employee(service_type) {
-            emloyee_counter.change(function() {
+            emloyee_counter.keyup(function() {
                 if (this.value > 100) { this.value = 99 }
-                $('.calculator__price-count').text(count(this.value, excelTable_salary, service_type));
+                if ($('#trust_salaryAndStaff').hasClass('checked') == false) { 
+                    $('.calculator__price-count').text(excelTable_salary[1][service_type]);
+                    return false; 
+                }
+                else {
+                    $('.calculator__price-count').text(count(this.value, excelTable_salary, service_type));
+                }
             });
         }
 
@@ -249,28 +402,33 @@ function next() {
             console.log(this)
         })
 
-        $('.calculator__activity').fadeOut(500);
-        $('.calculator__count').fadeIn(500);
-        $('#business_partners').fadeOut(500);
-        $('#deals').fadeOut(500);
+        $('.calculator__activity').fadeOut(0);
+        $('.calculator__count').fadeIn(0);
+        $('#business_partners').fadeOut(0);
+        $('#deals').fadeOut(0);
         $('#staff_span').addClass('item-active')
+
+        if ($('#trust_salaryAndStaff').hasClass('checked') == false) {
+            $('.calculator__price-count').text(excelTable_salary[1]['Зарплата']);
+        }
 
     }
 
-    //console.log(excelTable_salary)
-    //console.log(excelTable_report)
     function count(staff_count, table, row, trust_we = 'true') {
         let salary_sum = 0; 
 
-        if (staff_count <= 6 || trust_we == 'false') { 
+        if (staff_count < 6) { 
             salary_sum = table[1][row]; 
-            return salary_sum; 
+            return salary_sum;
         }
 
+        let start_summ = 0
         staff_count >= 6  && staff_count <= 15  ? salary_sum = table[2][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 16 && staff_count <= 30  ? salary_sum = table[3][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 31 && staff_count <= 50  ? salary_sum = table[4][row] * emloyee_counter.val() : salary_sum = salary_sum;
         staff_count >= 51 && staff_count <= 100 ? salary_sum = table[5][row] * emloyee_counter.val() : salary_sum = salary_sum;
+        salary_sum = table[1][row] + salary_sum;
+
         return salary_sum;
     }
 
@@ -278,8 +436,8 @@ function next() {
     function handler() {
         $('.calculator__taxation-range').replaceWith(defaul_horisontal_input)
         horisontal_spans[0].innerHTML = default_inner
-        $('#business_partners').fadeIn(500);
-        $('#deals').fadeIn(500);
+        $('#business_partners').fadeIn(0);
+        $('#deals').fadeIn(0);
         $('#staff_span').removeClass('item-active')
     }
 
@@ -296,7 +454,8 @@ function next() {
     }
 
     // Обработчик для чекбокса "Доверяю вам"
-    function trust_we_handler(row = '', service_type) {
+    function trust_we_handler(row, service_type, tariff_type) {
+
         for (let index = 0; index < trust_button.length; index++) {
             trust_button[index].onclick = function() {
                 let input = $(this).parents('.calculator__count-item__checkbox').find('input');
@@ -307,9 +466,11 @@ function next() {
                     $(input).attr('checked', 'checked');
                     $(input).parents('.calculator__count-item__checkbox').find('span').addClass('checked');
                 }
+                // if (row) { console.log(row) }
             }
         }
     }
+    // Обработчик для чекбокса "Доверяю вам"
 }
 // Вешаем обрабочики на тарифы
 
@@ -317,6 +478,8 @@ function next() {
 function get_sum(transactions, service_type, tariff_type) {
     console.log(transactions + ' - ' + 'transactions sum');
     console.log(service_type + ' - ' + 'service type');
+    console.log(tariff_type + ' - ' + 'tariff_type');
+   
    
     if (tariff_type == 'ООО') { 
         service_type == 'ПАТЕНТ' ? service_type = 'Патент' : service_type = service_type
@@ -326,14 +489,23 @@ function get_sum(transactions, service_type, tariff_type) {
 
             if (transactions <= parseInt(to) && transactions >= parseInt(from)) {
                 let price = excelTable_main[i][service_type];
-                console.log(excelTable_main[i][service_type])
-                console.log(price)
-                console.log(excelTable_main[0])
-                console.log(excelTable_main[i])
-                
+                let emloyee_price = 0;
+
+                if (service_type == 'ОСНО')    { emloyee_price = excelTable_main[i].__EMPTY_3;  }
+                if (service_type == 'УСН 15%') { emloyee_price = excelTable_main[i].__EMPTY_6;  }
+                if (service_type == 'УСН 6%')  { emloyee_price = excelTable_main[i].__EMPTY_9;  }
+                if (service_type == 'ПАТЕНТ')  { emloyee_price = excelTable_main[i].__EMPTY_12; }
+                if (service_type == 'ЕНВД')    { emloyee_price = excelTable_main[i].__EMPTY_15; }
+                              
                 let get_epml_summ = 0;
+
+                if ($('#trust_salaryAndStaff').hasClass('checked') == true) {
                 if (parseInt($('#employee_input').val()) <= 1) { get_epml_summ = 0 }
-                else { get_epml_summ = parseInt($('#employee_input').val()) * 200 - 200 }
+                else { get_epml_summ = parseInt($('#employee_input').val()) * emloyee_price - emloyee_price }
+                } else {
+                    get_epml_summ = 0
+                }
+               
                 $('.calculator__price-count').text(price + get_epml_summ);
             } 
         }
@@ -346,25 +518,61 @@ function get_sum(transactions, service_type, tariff_type) {
 
             if (transactions <= parseInt(to) && transactions >= parseInt(from)) {
                 let price = 0;
+                let emloyee_price = 0;
 
-                if (service_type == 'ОСНО')    { price = excelTable_main[i].__EMPTY_2;  }
-                if (service_type == 'УСН 15%') { price = excelTable_main[i].__EMPTY_5;  }
-                if (service_type == 'УСН 6%')  { price = excelTable_main[i].__EMPTY_8;  }
-                if (service_type == 'ПАТЕНТ')  { price = excelTable_main[i].__EMPTY_11; }
-                if (service_type == 'ЕНВД')    { price = excelTable_main[i].__EMPTY_14; }
-
-                console.log(excelTable_main[i].__EMPTY_2)
-                console.log(excelTable_main[i][service_type])
-                console.log(price + ' - ' + 'price')
-                console.log(excelTable_main[0])
-                console.log(excelTable_main[i])
+                if (service_type == 'ОСНО') { 
+                    price = excelTable_main[i].__EMPTY_2;  
+                    emloyee_price = excelTable_main[i].__EMPTY_4;
+                }
+                if (service_type == 'УСН 15%') { 
+                    price = excelTable_main[i].__EMPTY_5;  
+                    emloyee_price = excelTable_main[i].__EMPTY_7;
+                }
+                if (service_type == 'УСН 6%') { 
+                    price = excelTable_main[i].__EMPTY_8; 
+                    emloyee_price = excelTable_main[i].__EMPTY_10;
+                }
+                if (service_type == 'ПАТЕНТ') { 
+                    price = excelTable_main[i].__EMPTY_11; 
+                    emloyee_price = excelTable_main[i].__EMPTY_13;
+                }
+                if (service_type == 'ЕНВД') { 
+                    price = excelTable_main[i].__EMPTY_14; 
+                    emloyee_price = excelTable_main[i].__EMPTY_16;
+                }
                 
                 let get_epml_summ = 0;
+
+                if ($('#trust_salaryAndStaff').hasClass('checked') == true) {
                 if (parseInt($('#employee_input').val()) <= 1) { get_epml_summ = 0 }
-                else { get_epml_summ = parseInt($('#employee_input').val()) * 200 - 200 }
+                else { get_epml_summ = parseInt($('#employee_input').val()) * emloyee_price - emloyee_price }
+                } else {
+                    get_epml_summ = 0
+                }
+
                 $('.calculator__price-count').text(price + get_epml_summ);
             } 
         }
     }
 }
 // Подсчет суммы для тарифов "Комплексный" и "ИП Без работников"
+
+// Подсчет суммы ! полей ! для тарифов "Комплексный" и "ИП Без работников"
+function sum_fields() {
+    let sum = 0
+    $('#dealsClients_trust_span').hasClass('checked')   == false  
+        ?  sum = $('#transactions_suppliers').val() : sum = sum;
+
+    $('#dealsSuppliers_trust_span').hasClass('checked') == false  
+        ?  sum = $('#transactions_buyers').val() : sum = sum;
+
+    $('#dealsSuppliers_trust_span').hasClass('checked') == false  
+        && $('#dealsClients_trust_span').hasClass('checked') == false 
+        ? sum = 0 : sum = sum;
+
+    $('#dealsClients_trust_span').hasClass('checked') == true   
+        && $('#dealsSuppliers_trust_span').hasClass('checked') == true 
+        ? sum = parseInt($('#transactions_suppliers').val()) + parseInt($('#transactions_buyers').val()) : sum = sum;
+    return sum;
+}
+// Подсчет суммы ! полей ! для тарифов "Комплексный" и "ИП Без работников"
